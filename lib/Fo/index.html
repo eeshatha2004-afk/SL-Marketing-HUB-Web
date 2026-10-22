@@ -195,7 +195,7 @@
                     
                     <div class="relative w-64">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                        <input type="text" placeholder="Search by Order ID, Name..." class="w-full bg-white dark:bg-[#1f2833] text-xs text-gray-900 dark:text-white pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-purple-500">
+                        <input id="orderSearchInput" type="text" placeholder="Search by Order ID, Name..." class="w-full bg-white dark:bg-[#1f2833] text-xs text-gray-900 dark:text-white pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-purple-500">
                     </div>
                     
                     <div class="relative">
@@ -455,6 +455,7 @@
         ];
 
         let selectedOrderId = null; 
+        let pendingOrderId = null;
         let statusChartObj = null;
         let analyticsChartObj = null;
 
@@ -523,6 +524,10 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('dashboardWrapper').classList.remove('hidden');
                 renderTableRows();
+                if (pendingOrderId) {
+                    openCustomerDetails(pendingOrderId);
+                    pendingOrderId = null;
+                }
             } else { alert("Incorrect password! Please try again."); }
         });
 
@@ -531,9 +536,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const urlOrderId = urlParams.get('orderId');
             if (urlOrderId) {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('dashboardWrapper').classList.remove('hidden');
-                renderTableRows(); openCustomerDetails('#' + urlOrderId);
+                pendingOrderId = urlOrderId.startsWith('#') ? urlOrderId : `#${urlOrderId}`;
             }
         });
 
@@ -541,8 +544,11 @@
         const viewPanels = document.querySelectorAll('.view-panel');
         const currentViewTitle = document.getElementById('currentViewTitle');
         const mainTableBody = document.getElementById('mainTableBody');
+        const orderSearchInput = document.getElementById('orderSearchInput');
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
+
+        orderSearchInput.addEventListener('input', renderTableRows);
 
         themeToggleBtn.addEventListener('click', () => {
             if (document.documentElement.classList.contains('dark')) {
@@ -605,8 +611,11 @@
             document.getElementById('noAnswersTableBody').innerHTML = '';
             document.getElementById('rejectOrdersTableBody').innerHTML = '';
 
-            // 2. Separate arrays by matching categories
-            dataset.forEach(item => {
+            // 2. Separate matching orders by category
+            const searchTerm = orderSearchInput.value.trim().toLowerCase();
+            dataset
+                .filter(item => !searchTerm || item.id.toLowerCase().includes(searchTerm) || item.name.toLowerCase().includes(searchTerm))
+                .forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-100/40 dark:hover:bg-gray-800/30 transition border-b border-gray-200 dark:border-gray-700/40 last:border-0";
                 tr.innerHTML = createRowHTML(item);
