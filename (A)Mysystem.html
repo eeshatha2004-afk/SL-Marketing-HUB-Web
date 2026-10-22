@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SL Marketing Hub - Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        html.light {
+            background-color: #f4f6f9;
+        }
+        html.light body {
+            background-color: #f4f6f9;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="bg-[#0b0c10] text-gray-300 font-sans min-h-screen transition-colors duration-300">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0b0c10] p-4">
+        <div class="bg-[#1f2833] p-8 rounded-2xl max-w-md w-full border border-gray-800 shadow-2xl relative">
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-purple-600/10 rounded-full text-purple-500 mb-3">
+                    <i class="fa-solid fa-bolt text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white">SL Marketing Hub</h2>
+                <p class="text-sm text-gray-400 mt-1">Please sign in to your account</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Select Account</label>
+                    <select id="accountSelect" class="w-full bg-[#0b0c10] border border-gray-800 rounded-lg px-4 py-2.5 text-sm font-medium text-white focus:outline-none focus:border-purple-500">
+                        <!-- Accounts populate automatically -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full bg-[#0b0c10] border border-gray-800 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm py-2.5 rounded-lg transition shadow-md mt-2">Sign In</button>
+                
+                <div class="flex items-center my-4">
+                    <div class="flex-1 border-t border-gray-800"></div>
+                    <span class="px-3 text-xs text-gray-500 uppercase font-medium">OR</span>
+                    <div class="flex-1 border-t border-gray-800"></div>
+                </div>
+
+                <button type="button" onclick="openRegisterModal()" class="w-full border border-purple-500/30 hover:border-purple-500/60 bg-purple-500/5 hover:bg-purple-500/10 text-purple-400 text-sm font-medium py-2.5 rounded-lg transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-user-plus text-xs"></i>
+                    <span>Create New Account</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL (POPUP) -->
+    <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
+        <div class="bg-[#1f2833] p-6 rounded-2xl max-w-sm w-full border border-gray-700 shadow-2xl relative">
+            <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <h3 class="text-lg font-bold text-white mb-4">Add New Account</h3>
+            
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Full Name</label>
+                    <input type="text" id="regName" placeholder="E.g., Kamal Silva" required class="w-full bg-[#0b0c10] border border-gray-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Role / Designation</label>
+                    <input type="text" id="regRole" placeholder="E.g., Moderator, Manager" required class="w-full bg-[#0b0c10] border border-gray-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400 block mb-1">Password</label>
+                    <input type="password" id="regPassword" placeholder="Set password" required class="w-full bg-[#0b0c10] border border-gray-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-medium text-sm py-2.5 rounded-lg transition shadow-md mt-2">
+                    Save Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD WRAPPER -->
+    <div id="dashboardWrapper" class="flex hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-white dark:bg-[#1f2833] p-5 flex flex-col justify-between border-r border-gray-200 dark:border-gray-700 shrink-0 min-h-screen">
+            <div>
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fa-solid fa-bolt text-purple-500 text-2xl"></i>
+                    <span class="text-gray-900 dark:text-white text-xl font-bold tracking-wider">SL Marketing Hub</span>
+                </div>
+
+                <nav class="space-y-1" id="sidebarMenu">
+                    <button data-target="dashboardView" class="menu-btn w-full flex items-center justify-between p-2.5 bg-purple-600 text-white rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-chart-pie w-4 text-center"></i>
+                            <span>Dashboard</span>
+                        </div>
+                    </button>
+                    <button data-target="newOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-cart-shopping w-4 text-center text-blue-500"></i>
+                            <span>New Orders</span>
+                        </div>
+                        <span id="badge-new" class="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button data-target="confirmOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-circle-check w-4 text-center text-green-500"></i>
+                            <span>Confirm Orders</span>
+                        </div>
+                        <span id="badge-confirm" class="bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button data-target="noAnswersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-phone-slash w-4 text-center text-yellow-500"></i>
+                            <span>No Answers</span>
+                        </div>
+                        <span id="badge-noanswer" class="bg-yellow-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button data-target="rejectOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-circle-xmark w-4 text-center text-red-500"></i>
+                            <span>Reject Orders</span>
+                        </div>
+                        <span id="badge-reject" class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    
+                    <button data-target="productsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-box w-4 text-center text-gray-400"></i>
+                            <span>Products</span>
+                        </div>
+                    </button>
+                    <button data-target="customersView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-users w-4 text-center text-gray-400"></i>
+                            <span>Customers</span>
+                        </div>
+                    </button>
+                    <button data-target="campaignsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-clock-rotate-left w-4 text-center text-gray-400"></i>
+                            <span>Campaigns (TikTok Ads)</span>
+                        </div>
+                    </button>
+                    <button data-target="settingsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-gear w-4 text-center text-gray-400"></i>
+                            <span>Settings</span>
+                        </div>
+                    </button>
+                </nav>
+            </div>
+
+            <div>
+                <button onclick="triggerSystemLogout()" class="w-full flex items-center space-x-3 p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition font-medium text-xs">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-6 overflow-y-auto max-h-screen bg-gray-50 dark:bg-[#0b0c10]">
+            
+            <!-- HEADER -->
+            <header class="flex justify-between items-center mb-6 relative">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white" id="currentViewTitle">Dashboard</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Welcome back, <span id="headerUserRole" class="font-semibold text-purple-500">Manager</span></p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="themeToggle" class="p-2 rounded-lg bg-white dark:bg-[#1f2833] text-yellow-500 dark:text-yellow-400 border border-gray-200 dark:border-gray-700 hover:scale-105 transition">
+                        <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                    </button>
+                    
+                    <div class="relative w-64">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
+                        <input type="text" placeholder="Search by Order ID, Name..." class="w-full bg-white dark:bg-[#1f2833] text-xs text-gray-900 dark:text-white pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-purple-500">
+                    </div>
+                    
+                    <div class="relative">
+                        <button id="notiBellBtn" class="relative p-2 rounded-lg bg-white dark:bg-[#1f2833] text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:text-purple-500">
+                            <i class="fa-solid fa-bell text-sm"></i>
+                            <span class="absolute top-1 right-1 flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
+                        </button>
+                        <div id="notiDropdownMenu" class="absolute right-0 mt-2 w-64 bg-white dark:bg-[#1f2833] border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-2 hidden z-40 text-xs">
+                            <div class="px-4 py-2 font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700">Notifications</div>
+                            <div class="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 cursor-pointer">📦 Order #1005 was received from TikTok Store.</div>
+                            <div class="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 cursor-pointer">✅ Kamal Silva verified mobile connection.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dynamic Profile Dropdown -->
+                    <div class="relative">
+                        <div id="profileDropdownBtn" class="flex items-center space-x-2 bg-white dark:bg-[#1f2833] border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg cursor-pointer hover:border-purple-500 transition">
+                            <div id="profileAvatar" class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white">S</div>
+                            <span id="profileUsername" class="text-xs font-medium text-gray-800 dark:text-white">S.T.E. Kalhara</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                        </div>
+                        
+                        <!-- Dropdown Menu Box -->
+                        <div id="profileDropdownMenu" class="absolute right-0 mt-2 w-60 bg-[#1e2330] border border-gray-800 rounded-xl shadow-xl py-3 hidden z-40 text-xs">
+                            <div class="px-4 pb-2 text-[10px] font-bold text-gray-500 uppercase tracking-wider">Account Control</div>
+                            <div id="dropdownAccountsList" class="space-y-0.5"></div>
+                            <div class="border-t border-gray-800/60 my-2"></div>
+                            <div onclick="triggerSystemLogout()" class="px-4 py-2 hover:bg-red-500/5 text-red-500 font-bold cursor-pointer flex items-center space-x-2 transition">
+                                <i class="fa-solid fa-right-from-bracket rotate-180 text-sm"></i>
+                                <span>Logout Session</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DYNAMIC SUB VIEWS HOLDER -->
+            <div id="viewContainer">
+                <!-- VIEW 1: DASHBOARD -->
+                <div id="dashboardView" class="view-panel space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div onclick="openOrderAnalyticsView()" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-purple-500 transition">
+                            <div><p class="text-[10px] text-gray-400 font-semibold uppercase">Total Orders</p><p id="stat-total" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-green-500 font-medium"><i class="fa-solid fa-arrow-up mr-0.5"></i>Active</span></div>
+                            <div class="p-2.5 bg-purple-500/10 rounded-lg text-purple-500"><i class="fa-solid fa-shopping-cart text-base"></i></div>
+                        </div>
+                        <div onclick="switchView('newOrdersView')" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-blue-500 transition">
+                            <div><p class="text-[10px] text-gray-400 font-semibold uppercase">New Orders</p><p id="stat-new" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-blue-500 font-medium"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Track</span></div>
+                            <div class="p-2.5 bg-blue-500/10 rounded-lg text-blue-500"><i class="fa-solid fa-file-invoice text-base"></i></div>
+                        </div>
+                        <div onclick="switchView('confirmOrdersView')" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-green-500 transition">
+                            <div><p class="text-[10px] text-gray-400 font-semibold uppercase">Confirm Orders</p><p id="stat-confirm" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-green-500 font-medium"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Ready</span></div>
+                            <div class="p-2.5 bg-green-500/10 rounded-lg text-green-400"><i class="fa-solid fa-circle-check text-base"></i></div>
+                        </div>
+                        <div onclick="switchView('noAnswersView')" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-yellow-500 transition">
+                            <div><p class="text-[10px] text-gray-400 font-semibold uppercase">No Answers</p><p id="stat-noanswer" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-yellow-600 font-medium"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Pending</span></div>
+                            <div class="p-2.5 bg-yellow-500/10 rounded-lg text-yellow-600"><i class="fa-solid fa-phone-slash text-base"></i></div>
+                        </div>
+                        <div onclick="switchView('rejectOrdersView')" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-red-500 transition">
+                            <div><p class="text-[10px] text-gray-400 font-semibold uppercase">Reject Orders</p><p id="stat-reject" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-red-500 font-medium"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Dropped</span></div>
+                            <div class="p-2.5 bg-red-500/10 rounded-lg text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">Snapshot: Recent Orders</h3>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mb-4">Showing full recent system entries active right now.</p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-gray-100 dark:bg-gray-800/60 uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                        <tr>
+                                            <th class="p-2.5">Order ID</th>
+                                            <th class="p-2.5">Customer</th>
+                                            <th class="p-2.5">Product</th>
+                                            <th class="p-2.5">Price</th>
+                                            <th class="p-2.5">Status</th>
+                                            <th class="p-2.5 text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mainTableBody" class="divide-y divide-gray-200 dark:divide-gray-700/50 font-medium text-gray-700 dark:text-gray-300"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div onclick="openOrderAnalyticsView()" class="cursor-pointer bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between hover:border-purple-500 transition">
+                            <div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-sm font-bold text-gray-900 dark:text-white">Order Status Chart</h3>
+                                    <i class="fa-solid fa-expand text-gray-400 text-xs"></i>
+                                </div>
+                                <div class="relative max-w-[170px] mx-auto">
+                                    <canvas id="statusDonutChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-[10px] font-semibold text-gray-500 dark:text-gray-400 mt-4 border-t border-gray-200 dark:border-gray-700/60 pt-3">
+                                <div class="flex items-center"><span class="w-2 h-2 rounded bg-blue-500 mr-2 block"></span>New Orders</div>
+                                <div class="flex items-center"><span class="w-2 h-2 rounded bg-green-500 mr-2 block"></span>Confirm Orders</div>
+                                <div class="flex items-center"><span class="w-2 h-2 rounded bg-yellow-500 mr-2 block"></span>No Answers</div>
+                                <div class="flex items-center"><span class="w-2 h-2 rounded bg-red-500 mr-2 block"></span>Reject Orders</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTERED TABS (Now render tables with data + dynamic action plus markers) -->
+                <div id="newOrdersView" class="view-panel hidden space-y-4">
+                    <div class="bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-100 dark:bg-gray-800/60 uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                    <tr><th class="p-2.5">Order ID</th><th class="p-2.5">Customer</th><th class="p-2.5">Product</th><th class="p-2.5">Price</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Action</th></tr>
+                                </thead>
+                                <tbody id="newOrdersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700/50 font-medium text-gray-700 dark:text-gray-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="confirmOrdersView" class="view-panel hidden space-y-4">
+                    <div class="bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-100 dark:bg-gray-800/60 uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                    <tr><th class="p-2.5">Order ID</th><th class="p-2.5">Customer</th><th class="p-2.5">Product</th><th class="p-2.5">Price</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Action</th></tr>
+                                </thead>
+                                <tbody id="confirmOrdersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700/50 font-medium text-gray-700 dark:text-gray-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="noAnswersView" class="view-panel hidden space-y-4">
+                    <div class="bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-100 dark:bg-gray-800/60 uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                    <tr><th class="p-2.5">Order ID</th><th class="p-2.5">Customer</th><th class="p-2.5">Product</th><th class="p-2.5">Price</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Action</th></tr>
+                                </thead>
+                                <tbody id="noAnswersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700/50 font-medium text-gray-700 dark:text-gray-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rejectOrdersView" class="view-panel hidden space-y-4">
+                    <div class="bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-100 dark:bg-gray-800/60 uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                                    <tr><th class="p-2.5">Order ID</th><th class="p-2.5">Customer</th><th class="p-2.5">Product</th><th class="p-2.5">Price</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Action</th></tr>
+                                </thead>
+                                <tbody id="rejectOrdersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700/50 font-medium text-gray-700 dark:text-gray-300"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ORDER ANALYTICS VIEW -->
+                <div id="orderAnalyticsView" class="view-panel space-y-6 hidden">
+                    <div class="flex items-center text-xs text-gray-400 mb-2">
+                        <button onclick="goBackToDashboard()" class="hover:text-purple-500 transition font-medium">
+                            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-[#1f2833] p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <h3 class="text-base font-bold text-gray-900 dark:text-white mb-6">Detailed Order Status Overview</h3>
+                            <div class="flex flex-col sm:flex-row items-center justify-around space-y-6 sm:space-y-0">
+                                <div class="relative max-w-[280px] w-full"><canvas id="analyticsMainDonutChart"></canvas></div>
+                                <div class="space-y-3 text-xs font-semibold text-gray-600 dark:text-gray-300">
+                                    <div class="flex items-center space-x-3"><span class="w-7 h-3 rounded bg-[#3b82f6] block"></span><span>New Orders</span></div>
+                                    <div class="flex items-center space-x-3"><span class="w-7 h-3 rounded bg-[#22c55e] block"></span><span>Confirm Orders</span></div>
+                                    <div class="flex items-center space-x-3"><span class="w-7 h-3 rounded bg-[#eab308] block"></span><span>No Answers</span></div>
+                                    <div class="flex items-center space-x-3"><span class="w-7 h-3 rounded bg-[#ef4444] block"></span><span>Reject Orders</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-br from-purple-600 to-indigo-700 p-6 rounded-2xl text-white shadow-md">
+                                <div class="flex items-center space-x-2 opacity-80 text-[10px] uppercase font-bold tracking-wider"><i class="fa-solid fa-cubes text-sm"></i><span>Accumulated Orders</span></div>
+                                <div class="mt-2 flex items-baseline space-x-2"><span id="analytics-total-items" class="text-4xl font-black">0</span><span class="text-xs font-semibold opacity-90">Items</span></div>
+                            </div>
+                            <div class="bg-white dark:bg-[#1f2833] p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                                <div class="flex items-center space-x-2 text-gray-400 text-[10px] uppercase font-bold tracking-wider mb-2"><i class="fa-solid fa-hand-holding-dollar text-sm text-green-500"></i><span>Total Gross Price / Value</span></div>
+                                <h4 id="analytics-total-price" class="text-2xl font-black text-gray-900 dark:text-white mb-6">LKR 0.00</h4>
+                                <div class="space-y-2.5 text-xs font-medium border-t border-gray-200 dark:border-gray-700/60 pt-4">
+                                    <div class="flex justify-between"><span class="text-gray-400">Approved Value (<span id="analytics-cnt-confirm">0</span>)</span><span id="analytics-val-confirm" class="text-green-500 font-bold">LKR 0.00</span></div>
+                                    <div class="flex justify-between"><span class="text-gray-400">Pending Value (<span id="analytics-cnt-new">0</span>)</span><span id="analytics-val-new" class="text-blue-500 font-bold">LKR 0.00</span></div>
+                                    <div class="flex justify-between"><span class="text-gray-400">Follow-up/Dropped (<span id="analytics-cnt-dropped">0</span>)</span><span id="analytics-val-dropped" class="text-gray-500 font-bold">LKR 0.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CUSTOMER DETAIL VIEW -->
+                <div id="customerDetailView" class="view-panel space-y-6 hidden">
+                    <div class="flex items-center text-xs text-gray-400 mb-2">
+                        <button onclick="goBackToDashboard()" class="hover:text-purple-500 transition font-medium"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="updateCurrentOrderStatus('Confirmed')" class="flex items-center justify-center space-x-3 p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow transition"><i class="fa-solid fa-circle-check text-xl"></i><span>Confirm Order</span></button>
+                        <button onclick="updateCurrentOrderStatus('No Answer')" class="flex items-center justify-center space-x-3 p-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 rounded-xl font-bold shadow transition"><i class="fa-solid fa-phone-slash text-xl"></i><span>No Answer</span></button>
+                        <button onclick="updateCurrentOrderStatus('Rejected')" class="flex items-center justify-center space-x-3 p-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow transition"><i class="fa-solid fa-circle-xmark text-xl"></i><span>Reject Order</span></button>
+                    </div>
+                    <div class="bg-white dark:bg-[#1f2833] p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm max-w-4xl mx-auto">
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-6 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Customer & Order Sheet</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Order Token ID: <span id="detail-order-id" class="text-purple-500 font-bold">#0000</span></p>
+                            </div>
+                            <div id="detail-status-badge"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Customer Full Name</label><div id="detail-name" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div></div>
+                                <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Mobile Number</label><div class="flex"><div id="detail-mobile" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-l-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div><a id="detail-dial-btn" href="#" class="bg-purple-600 text-white px-4 rounded-r-lg flex items-center justify-center"><i class="fa-solid fa-phone text-xs"></i></a></div></div>
+                                <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">City / Location</label><div id="detail-city" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Delivery Address</label><div id="detail-address" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white h-[100px] overflow-y-auto"></div></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Product Pack</label><div id="detail-product" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div></div>
+                                    <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Total Valuation</label><div id="detail-price" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm font-bold text-purple-500"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UNUSED DEFAULT STATIC PANELS -->
+                <div id="productsView" class="view-panel hidden"><div class="bg-white dark:bg-[#1f2833] p-6 rounded-xl border border-gray-200 dark:border-gray-700 text-sm"><h3 class="font-bold text-gray-900 dark:text-white">Products Configuration Directory</h3></div></div>
+                <div id="customersView" class="view-panel hidden"><div class="bg-white dark:bg-[#1f2833] p-6 rounded-xl border border-gray-200 dark:border-gray-700 text-sm"><h3 class="font-bold text-gray-900 dark:text-white">Global Customers Master Sheet</h3></div></div>
+                <div id="campaignsView" class="view-panel hidden"><div class="bg-white dark:bg-[#1f2833] p-6 rounded-xl border border-gray-200 dark:border-gray-700 text-sm"><h3 class="font-bold text-gray-900 dark:text-white">TikTok Commercial Ads Matrix</h3></div></div>
+                <div id="settingsView" class="view-panel hidden"><div class="bg-white dark:bg-[#1f2833] p-6 rounded-xl border border-gray-200 dark:border-gray-700 text-sm"><h3 class="font-bold text-gray-900 dark:text-white">System Core Parameters</h3></div></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- CORE JAVASCRIPT LOGIC -->
+    <script>
+        const defaultAccounts = [
+            { name: "S.T.E. Kalhara", role: "Manager", password: "123" },
+            { name: "Admin", role: "Administrator", password: "admin" }
+        ];
+
+        let accountsDatabase = JSON.parse(localStorage.getItem('sl_accounts')) || defaultAccounts;
+        let currentActiveUserIndex = 0; 
+
+        let dataset = [
+            { id: '#1001', name: 'Nimal Perera', mobile: '0771234567', product: 'Product A', price: 'LKR 2,500.00', status: 'New Order', address: 'No. 23/A, Galle Road', city: 'Colombo 03' },
+            { id: '#1002', name: 'Kamal Silva', mobile: '0769876543', product: 'Product B', price: 'LKR 3,200.00', status: 'Confirmed', address: '45/1, Peradeniya Road', city: 'Kandy' },
+            { id: '#1003', name: 'Sanduni Fernando', mobile: '0712345678', product: 'Product A', price: 'LKR 2,500.00', status: 'No Answer', address: '12, Negombo Road', city: 'Kurunegala' },
+            { id: '#1004', name: 'Pasindu Jayasekara', mobile: '0755566778', product: 'Product C', price: 'LKR 1,800.00', status: 'Rejected', address: '78, Main Street', city: 'Galle' },
+            { id: '#1005', name: 'Anura Kumara', mobile: '0711122233', product: 'Product C', price: 'LKR 1,800.00', status: 'New Order', address: 'No. 10, Bypass Road', city: 'Anuradhapura' }
+        ];
+
+        let selectedOrderId = null; 
+        let statusChartObj = null;
+        let analyticsChartObj = null;
+
+        const accountSelect = document.getElementById('accountSelect');
+        const loginForm = document.getElementById('loginForm');
+        const registerModal = document.getElementById('registerModal');
+        const registerForm = document.getElementById('registerForm');
+        const dropdownAccountsList = document.getElementById('dropdownAccountsList');
+
+        function updateAccountSelector() {
+            accountSelect.innerHTML = '';
+            accountsDatabase.forEach((acc, index) => {
+                const opt = document.createElement('option');
+                opt.value = index; opt.textContent = `${acc.name} (${acc.role})`; accountSelect.appendChild(opt);
+            });
+        }
+
+        function renderHeaderDropdownAccounts() {
+            dropdownAccountsList.innerHTML = '';
+            accountsDatabase.forEach((acc, index) => {
+                const isActive = (parseInt(index) === parseInt(currentActiveUserIndex));
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `px-4 py-2 hover:bg-gray-800/40 cursor-pointer flex items-center justify-between transition text-xs font-semibold ${isActive ? 'text-purple-500' : 'text-gray-400 hover:text-white'}`;
+                itemDiv.onclick = () => { switchActiveUserSession(index); };
+                const name = document.createElement('span');
+                name.textContent = acc.name;
+                itemDiv.appendChild(name);
+                if (isActive) {
+                    const activeIcon = document.createElement('i');
+                    activeIcon.className = 'fa-solid fa-circle-check text-purple-500 text-xs';
+                    itemDiv.appendChild(activeIcon);
+                }
+                dropdownAccountsList.appendChild(itemDiv);
+            });
+        }
+
+        function switchActiveUserSession(index) {
+            if(index >= accountsDatabase.length) return;
+            currentActiveUserIndex = index;
+            const currentAccount = accountsDatabase[index];
+            document.getElementById('profileUsername').textContent = currentAccount.name;
+            document.getElementById('headerUserRole').textContent = currentAccount.role;
+            document.getElementById('profileAvatar').textContent = currentAccount.name.charAt(0);
+            renderHeaderDropdownAccounts();
+        }
+
+        function openRegisterModal() { registerModal.classList.remove('hidden'); }
+        function closeRegisterModal() { registerModal.classList.add('hidden'); }
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newAcc = { name: document.getElementById('regName').value.trim(), role: document.getElementById('regRole').value.trim(), password: document.getElementById('regPassword').value };
+            accountsDatabase.push(newAcc);
+            localStorage.setItem('sl_accounts', JSON.stringify(accountsDatabase));
+            updateAccountSelector(); registerForm.reset(); closeRegisterModal();
+            accountSelect.value = accountsDatabase.length - 1;
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const selectedIdx = accountSelect.value;
+            const enteredPassword = document.getElementById('loginPassword').value;
+            const currentAccount = accountsDatabase[selectedIdx];
+            if (enteredPassword === currentAccount.password) {
+                currentActiveUserIndex = selectedIdx; switchActiveUserSession(currentActiveUserIndex);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboardWrapper').classList.remove('hidden');
+                renderTableRows();
+            } else { alert("Incorrect password! Please try again."); }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAccountSelector();
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOrderId = urlParams.get('orderId');
+            if (urlOrderId) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboardWrapper').classList.remove('hidden');
+                renderTableRows(); openCustomerDetails('#' + urlOrderId);
+            }
+        });
+
+        const menuButtons = document.querySelectorAll('.menu-btn');
+        const viewPanels = document.querySelectorAll('.view-panel');
+        const currentViewTitle = document.getElementById('currentViewTitle');
+        const mainTableBody = document.getElementById('mainTableBody');
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.replace('dark', 'light'); themeIcon.className = "fa-solid fa-sun text-sm";
+            } else {
+                document.documentElement.classList.replace('light', 'dark'); themeIcon.className = "fa-solid fa-moon text-sm";
+            }
+        });
+
+        document.getElementById('notiBellBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('notiDropdownMenu').classList.toggle('hidden'); document.getElementById('profileDropdownMenu').classList.add('hidden'); });
+        document.getElementById('profileDropdownBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('profileDropdownMenu').classList.toggle('hidden'); document.getElementById('notiDropdownMenu').classList.add('hidden'); });
+        document.addEventListener('click', () => { document.getElementById('notiDropdownMenu').classList.add('hidden'); document.getElementById('profileDropdownMenu').classList.add('hidden'); });
+
+        // Helper helper function to inject records systematically across individual segmented tables
+        function createRowHTML(item) {
+            let badgeStyle = "bg-blue-500/10 text-blue-500";
+            if(item.status === 'Confirmed') badgeStyle = "bg-green-500/10 text-green-500";
+            if(item.status === 'No Answer') badgeStyle = "bg-yellow-500/10 text-yellow-500";
+            if(item.status === 'Rejected') badgeStyle = "bg-red-500/10 text-red-500";
+
+            const cleanId = item.id.replace('#', '');
+            const currentUrlWithoutQuery = window.location.origin + window.location.pathname;
+            const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[character]);
+
+            return `
+                <td class="p-2.5 text-purple-500 font-bold">${escapeHtml(item.id)}</td>
+                <td class="p-2.5 text-xs font-semibold text-gray-900 dark:text-white">${escapeHtml(item.name)}<br><span class="text-[10px] text-gray-400 font-medium">${escapeHtml(item.mobile)}</span></td>
+                <td class="p-2.5 text-xs text-gray-600 dark:text-gray-300">${escapeHtml(item.product)}</td>
+                <td class="p-2.5 text-xs font-bold">${escapeHtml(item.price)}</td>
+                <td class="p-2.5"><span class="${badgeStyle} px-2 py-0.5 rounded-md text-[10px] font-semibold">${escapeHtml(item.status)}</span></td>
+                <td class="p-2.5 text-center">
+                    <a href="${currentUrlWithoutQuery}?orderId=${cleanId}" data-id="${item.id}"
+                       class="plus-tab-btn inline-flex items-center justify-center w-6 h-6 bg-purple-600/10 hover:bg-purple-600 text-purple-500 hover:text-white rounded-md transition">
+                       <i class="fa-solid fa-plus text-[10px]"></i>
+                    </a>
+                </td>
+            `;
+        }
+
+        // Attach action hooks to plus signs ensuring Ctrl functionality is fully working
+        function assignRowListeners(rowElement) {
+            const btn = rowElement.querySelector('.plus-tab-btn');
+            btn.addEventListener('click', function(e) {
+                // If Ctrl key or Cmd key (Mac) is down, open in new tab naturally without switching the view
+                if (e.ctrlKey || e.metaKey) {
+                    return; 
+                }
+                e.preventDefault();
+                openCustomerDetails(this.getAttribute('data-id'));
+            });
+        }
+
+        function renderTableRows() {
+            // 1. Clear existing rows
+            mainTableBody.innerHTML = '';
+            document.getElementById('newOrdersTableBody').innerHTML = '';
+            document.getElementById('confirmOrdersTableBody').innerHTML = '';
+            document.getElementById('noAnswersTableBody').innerHTML = '';
+            document.getElementById('rejectOrdersTableBody').innerHTML = '';
+
+            // 2. Separate arrays by matching categories
+            dataset.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-100/40 dark:hover:bg-gray-800/30 transition border-b border-gray-200 dark:border-gray-700/40 last:border-0";
+                tr.innerHTML = createRowHTML(item);
+                assignRowListeners(tr);
+                
+                // Append unconditionally to global dashboard recent snapshot logs
+                mainTableBody.appendChild(tr);
+
+                // Clone element to append to designated category specific subviews
+                const specificTr = document.createElement('tr');
+                specificTr.className = "hover:bg-gray-100/40 dark:hover:bg-gray-800/30 transition border-b border-gray-200 dark:border-gray-700/40 last:border-0";
+                specificTr.innerHTML = createRowHTML(item);
+                assignRowListeners(specificTr);
+
+                if (item.status === 'New Order') {
+                    document.getElementById('newOrdersTableBody').appendChild(specificTr);
+                } else if (item.status === 'Confirmed') {
+                    document.getElementById('confirmOrdersTableBody').appendChild(specificTr);
+                } else if (item.status === 'No Answer') {
+                    document.getElementById('noAnswersTableBody').appendChild(specificTr);
+                } else if (item.status === 'Rejected') {
+                    document.getElementById('rejectOrdersTableBody').appendChild(specificTr);
+                }
+            });
+            recalculateMetrics();
+        }
+
+        function openCustomerDetails(id) {
+            const target = dataset.find(item => item.id === id);
+            if (!target) return;
+            selectedOrderId = id;
+            document.getElementById('detail-order-id').textContent = target.id;
+            document.getElementById('detail-name').textContent = target.name;
+            document.getElementById('detail-mobile').textContent = target.mobile;
+            document.getElementById('detail-dial-btn').href = `tel:${target.mobile}`;
+            document.getElementById('detail-city').textContent = target.city;
+            document.getElementById('detail-address').textContent = target.address;
+            document.getElementById('detail-product').textContent = target.product;
+            document.getElementById('detail-price').textContent = target.price;
+
+            let badgeHtml = `<span class="bg-blue-500/10 text-blue-500 text-xs px-3 py-1 rounded-md font-bold">${target.status}</span>`;
+            document.getElementById('detail-status-badge').innerHTML = badgeHtml;
+            switchView('customerDetailView');
+        }
+
+        function updateCurrentOrderStatus(newStatus) {
+            if(!selectedOrderId) return;
+            const target = dataset.find(item => item.id === selectedOrderId);
+            if(target) { target.status = newStatus; renderTableRows(); openCustomerDetails(selectedOrderId); }
+        }
+
+        function goBackToDashboard() {
+            window.history.pushState({}, document.title, window.location.origin + window.location.pathname);
+            switchView('dashboardView');
+        }
+
+        function recalculateMetrics() {
+            let news = dataset.filter(i => i.status === 'New Order').length;
+            let confirms = dataset.filter(i => i.status === 'Confirmed').length;
+            let noans = dataset.filter(i => i.status === 'No Answer').length;
+            let rejects = dataset.filter(i => i.status === 'Rejected').length;
+
+            document.getElementById('stat-total').textContent = dataset.length;
+            document.getElementById('stat-new').textContent = news;
+            document.getElementById('stat-confirm').textContent = confirms;
+            document.getElementById('stat-noanswer').textContent = noans;
+            document.getElementById('stat-reject').textContent = rejects;
+
+            document.getElementById('badge-new').textContent = news;
+            document.getElementById('badge-confirm').textContent = confirms;
+            document.getElementById('badge-noanswer').textContent = noans;
+            document.getElementById('badge-reject').textContent = rejects;
+
+            updateDonutChartData(news, confirms, noans, rejects);
+        }
+
+        function updateDonutChartData(news, confirms, noans, rejects) {
+            const ctx = document.getElementById('statusDonutChart').getContext('2d');
+            if (statusChartObj) {
+                statusChartObj.data.datasets[0].data = [news, confirms, noans, rejects];
+                statusChartObj.update();
+            } else {
+                statusChartObj = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { datasets: [{ data: [news, confirms, noans, rejects], backgroundColor: ['#3b82f6', '#22c55e', '#eab308', '#ef4444'], borderWidth: 0 }] },
+                    options: { cutout: '72%', plugins: { legend: { display: false } }, responsive: true }
+                });
+            }
+        }
+
+        function openOrderAnalyticsView() {
+            switchView('orderAnalyticsView');
+            currentViewTitle.textContent = "Order Analytics";
+
+            let news = dataset.filter(i => i.status === 'New Order').length;
+            let confirms = dataset.filter(i => i.status === 'Confirmed').length;
+            let noans = dataset.filter(i => i.status === 'No Answer').length;
+            let rejects = dataset.filter(i => i.status === 'Rejected').length;
+
+            let totalSum = 0, confirmSum = 0, newSum = 0, droppedSum = 0;
+            dataset.forEach(item => {
+                let parsedVal = parseFloat(item.price.replace(/[^\d.]/g, '')) || 0;
+                totalSum += parsedVal;
+                if (item.status === 'Confirmed') confirmSum += parsedVal;
+                else if (item.status === 'New Order') newSum += parsedVal;
+                else droppedSum += parsedVal;
+            });
+
+            document.getElementById('analytics-total-items').textContent = dataset.length;
+            document.getElementById('analytics-total-price').textContent = `LKR ${totalSum.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('analytics-cnt-confirm').textContent = confirms;
+            document.getElementById('analytics-val-confirm').textContent = `LKR ${confirmSum.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('analytics-cnt-new').textContent = news;
+            document.getElementById('analytics-val-new').textContent = `LKR ${newSum.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('analytics-cnt-dropped').textContent = (noans + rejects);
+            document.getElementById('analytics-val-dropped').textContent = `LKR ${droppedSum.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+
+            const analCtx = document.getElementById('analyticsMainDonutChart').getContext('2d');
+            if (analyticsChartObj) {
+                analyticsChartObj.data.datasets[0].data = [news, confirms, noans, rejects];
+                analyticsChartObj.update();
+            } else {
+                analyticsChartObj = new Chart(analCtx, {
+                    type: 'doughnut',
+                    data: { datasets: [{ data: [news, confirms, noans, rejects], backgroundColor: ['#3b82f6', '#22c55e', '#eab308', '#ef4444'], borderWidth: 0 }] },
+                    options: { cutout: '62%', plugins: { legend: { display: false } }, responsive: true }
+                });
+            }
+        }
+
+        function switchView(targetViewId) {
+            menuButtons.forEach(btn => { btn.classList.remove('bg-purple-600', 'text-white'); btn.classList.add('text-gray-500', 'dark:text-gray-400'); });
+            const activeSidebarBtn = Array.from(menuButtons).find(btn => btn.getAttribute('data-target') === targetViewId);
+            if (activeSidebarBtn) {
+                activeSidebarBtn.classList.add('bg-purple-600', 'text-white');
+                currentViewTitle.textContent = activeSidebarBtn.querySelector('span').textContent;
+            }
+            viewPanels.forEach(panel => {
+                if (panel.id === targetViewId) panel.classList.remove('hidden');
+                else panel.classList.add('hidden');
+            });
+        }
+
+        menuButtons.forEach(button => { button.addEventListener('click', () => switchView(button.getAttribute('data-target'))); });
+        function triggerSystemLogout() { window.location.href = window.location.origin + window.location.pathname; }
+    </script>
+</body>
+</html>
