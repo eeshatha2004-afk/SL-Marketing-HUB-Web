@@ -68,7 +68,7 @@
 
     <!-- REGISTER MODAL (POPUP) -->
     <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
-        <div class="bg-[#1f2833] p-6 rounded-2xl max-w-sm w-full border border-gray-700 shadow-2xl relative">
+        <div class="bg-[#1f2833] p-6 rounded-2xl max-h-full overflow-y-auto max-w-sm w-full border border-gray-700 shadow-2xl relative">
             <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
@@ -97,45 +97,45 @@
     </div>
 
     <!-- MAIN DASHBOARD WRAPPER -->
-    <div id="dashboardWrapper" class="flex hidden">
+    <div id="dashboardWrapper" class="hidden min-h-screen flex flex-col lg:flex-row">
         
         <!-- SIDEBAR -->
-        <aside class="w-64 bg-white dark:bg-[#1f2833] p-5 flex flex-col justify-between border-r border-gray-200 dark:border-gray-700 shrink-0 min-h-screen">
+        <aside class="w-full bg-white dark:bg-[#1f2833] p-3 sm:p-4 lg:w-64 lg:p-5 flex flex-col justify-between border-b border-r-0 lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 shrink-0 lg:min-h-screen">
             <div>
-                <div class="flex items-center space-x-3 mb-6">
-                    <i class="fa-solid fa-bolt text-purple-500 text-2xl"></i>
-                    <span class="text-gray-900 dark:text-white text-xl font-bold tracking-wider">SL Marketing Hub</span>
+                <div class="flex items-center space-x-2 mb-3 lg:space-x-3 lg:mb-6">
+                    <i class="fa-solid fa-bolt text-purple-500 text-xl lg:text-2xl"></i>
+                    <span class="text-gray-900 dark:text-white text-base lg:text-xl font-bold tracking-wider">SL Marketing Hub</span>
                 </div>
 
-                <nav class="space-y-1" id="sidebarMenu">
-                    <button data-target="dashboardView" class="menu-btn w-full flex items-center justify-between p-2.5 bg-purple-600 text-white rounded-lg transition font-medium text-xs text-left">
+                <nav class="flex gap-1 overflow-x-auto pb-1 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0" id="sidebarMenu">
+                    <button data-target="dashboardView" class="menu-btn w-max shrink-0 lg:w-full flex items-center justify-between p-2.5 bg-purple-600 text-white rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-chart-pie w-4 text-center"></i>
                             <span>Dashboard</span>
                         </div>
                     </button>
-                    <button data-target="newOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="newOrdersView" class="menu-btn w-max shrink-0 lg:w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-cart-shopping w-4 text-center text-blue-500"></i>
                             <span>New Orders</span>
                         </div>
                         <span id="badge-new" class="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
                     </button>
-                    <button data-target="confirmOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="confirmOrdersView" class="menu-btn w-max shrink-0 lg:w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-circle-check w-4 text-center text-green-500"></i>
                             <span>Confirm Orders</span>
                         </div>
                         <span id="badge-confirm" class="bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
                     </button>
-                    <button data-target="noAnswersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="noAnswersView" class="menu-btn w-max shrink-0 lg:w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-phone-slash w-4 text-center text-yellow-500"></i>
                             <span>No Answers</span>
                         </div>
                         <span id="badge-noanswer" class="bg-yellow-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
                     </button>
-                    <button data-target="rejectOrdersView" class="menu-btn w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="rejectOrdersView" class="menu-btn w-max shrink-0 lg:w-full flex items-center justify-between p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-circle-xmark w-4 text-center text-red-500"></i>
                             <span>Reject Orders</span>
@@ -143,25 +143,25 @@
                         <span id="badge-reject" class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
                     </button>
                     
-                    <button data-target="productsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="productsView" class="menu-btn w-max shrink-0 lg:w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-box w-4 text-center text-gray-400"></i>
                             <span>Products</span>
                         </div>
                     </button>
-                    <button data-target="customersView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="customersView" class="menu-btn w-max shrink-0 lg:w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-users w-4 text-center text-gray-400"></i>
                             <span>Customers</span>
                         </div>
                     </button>
-                    <button data-target="campaignsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="campaignsView" class="menu-btn w-max shrink-0 lg:w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-clock-rotate-left w-4 text-center text-gray-400"></i>
                             <span>Campaigns (TikTok Ads)</span>
                         </div>
                     </button>
-                    <button data-target="settingsView" class="menu-btn w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
+                    <button data-target="settingsView" class="menu-btn w-max shrink-0 lg:w-full flex items-center p-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition font-medium text-xs text-left">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-gear w-4 text-center text-gray-400"></i>
                             <span>Settings</span>
@@ -179,21 +179,21 @@
         </aside>
 
         <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 p-6 overflow-y-auto max-h-screen bg-gray-50 dark:bg-[#0b0c10]">
+        <main class="min-w-0 flex-1 p-3 sm:p-4 lg:p-6 bg-gray-50 dark:bg-[#0b0c10] lg:overflow-y-auto lg:max-h-screen">
             
             <!-- HEADER -->
-            <header class="flex justify-between items-center mb-6 relative">
+            <header class="flex flex-col gap-3 mb-5 relative sm:flex-row sm:justify-between sm:items-center sm:gap-4 sm:mb-6">
                 <div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white" id="currentViewTitle">Dashboard</h1>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Welcome back, <span id="headerUserRole" class="font-semibold text-purple-500">Manager</span></p>
                 </div>
                 
-                <div class="flex items-center space-x-4">
+                <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:gap-4">
                     <button id="themeToggle" class="p-2 rounded-lg bg-white dark:bg-[#1f2833] text-yellow-500 dark:text-yellow-400 border border-gray-200 dark:border-gray-700 hover:scale-105 transition">
                         <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
                     </button>
                     
-                    <div class="relative w-64">
+                    <div class="relative order-last w-full sm:order-none sm:w-64">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
                         <input id="orderSearchInput" type="text" placeholder="Search by Order ID, Name..." class="w-full bg-white dark:bg-[#1f2833] text-xs text-gray-900 dark:text-white pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 focus:outline-none focus:border-purple-500">
                     </div>
@@ -214,7 +214,7 @@
                     <div class="relative">
                         <div id="profileDropdownBtn" class="flex items-center space-x-2 bg-white dark:bg-[#1f2833] border border-gray-200 dark:border-gray-700 px-3 py-1.5 rounded-lg cursor-pointer hover:border-purple-500 transition">
                             <div id="profileAvatar" class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white">S</div>
-                            <span id="profileUsername" class="text-xs font-medium text-gray-800 dark:text-white">S.T.E. Kalhara</span>
+                            <span id="profileUsername" class="max-w-28 truncate text-xs font-medium text-gray-800 dark:text-white sm:max-w-none">S.T.E. Kalhara</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
                         </div>
                         
@@ -236,7 +236,7 @@
             <div id="viewContainer">
                 <!-- VIEW 1: DASHBOARD -->
                 <div id="dashboardView" class="view-panel space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                         <div onclick="openOrderAnalyticsView()" class="bg-white dark:bg-[#1f2833] p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex justify-between items-center shadow-sm cursor-pointer hover:border-purple-500 transition">
                             <div><p class="text-[10px] text-gray-400 font-semibold uppercase">Total Orders</p><p id="stat-total" class="text-xl font-bold text-gray-900 dark:text-white mt-0.5">0</p><span class="text-[10px] text-green-500 font-medium"><i class="fa-solid fa-arrow-up mr-0.5"></i>Active</span></div>
                             <div class="p-2.5 bg-purple-500/10 rounded-lg text-purple-500"><i class="fa-solid fa-shopping-cart text-base"></i></div>
@@ -259,8 +259,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <div class="xl:col-span-2 bg-white dark:bg-[#1f2833] p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">Snapshot: Recent Orders</h3>
                             <p class="text-[11px] text-gray-500 dark:text-gray-400 mb-4">Showing full recent system entries active right now.</p>
                             
@@ -361,8 +361,8 @@
                             <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
                         </button>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white dark:bg-[#1f2833] p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <div class="xl:col-span-2 bg-white dark:bg-[#1f2833] p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <h3 class="text-base font-bold text-gray-900 dark:text-white mb-6">Detailed Order Status Overview</h3>
                             <div class="flex flex-col sm:flex-row items-center justify-around space-y-6 sm:space-y-0">
                                 <div class="relative max-w-[280px] w-full"><canvas id="analyticsMainDonutChart"></canvas></div>
@@ -397,7 +397,7 @@
                     <div class="flex items-center text-xs text-gray-400 mb-2">
                         <button onclick="goBackToDashboard()" class="hover:text-purple-500 transition font-medium"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard</button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
                         <button onclick="updateCurrentOrderStatus('Confirmed')" class="flex items-center justify-center space-x-3 p-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow transition"><i class="fa-solid fa-circle-check text-xl"></i><span>Confirm Order</span></button>
                         <button onclick="updateCurrentOrderStatus('No Answer')" class="flex items-center justify-center space-x-3 p-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 rounded-xl font-bold shadow transition"><i class="fa-solid fa-phone-slash text-xl"></i><span>No Answer</span></button>
                         <button onclick="updateCurrentOrderStatus('Rejected')" class="flex items-center justify-center space-x-3 p-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow transition"><i class="fa-solid fa-circle-xmark text-xl"></i><span>Reject Order</span></button>
@@ -410,7 +410,7 @@
                             </div>
                             <div id="detail-status-badge"></div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Customer Full Name</label><div id="detail-name" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div></div>
                                 <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Mobile Number</label><div class="flex"><div id="detail-mobile" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-l-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div><a id="detail-dial-btn" href="#" class="bg-purple-600 text-white px-4 rounded-r-lg flex items-center justify-center"><i class="fa-solid fa-phone text-xs"></i></a></div></div>
@@ -418,7 +418,7 @@
                             </div>
                             <div class="space-y-4">
                                 <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Delivery Address</label><div id="detail-address" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white h-[100px] overflow-y-auto"></div></div>
-                                <div class="grid grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Product Pack</label><div id="detail-product" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white"></div></div>
                                     <div><label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Total Valuation</label><div id="detail-price" class="w-full bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm font-bold text-purple-500"></div></div>
                                 </div>
